@@ -10,6 +10,9 @@ Stockroom recreates an API project of a warehouse program.
 
 ## What is it? ##
 
+Stockroom recreates an API project of a warehouse program and serves as a
+GraphQL server.
+
 That is a test project for learning purposes and one of my first Golang codes.
 So I cannot vouch for the correctness of the code and approaches and its quality
 in a production environment.
