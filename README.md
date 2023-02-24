@@ -75,6 +75,5 @@ n/as
 
 [shield-license]:https://img.shields.io/github/license/slaff-bg/stockroom?logo=github
 [top-language]:https://img.shields.io/github/languages/top/slaff-bg/stockroom?logo=github
-[go-version]: https://img.shields.io/github/go-mod/go-version/slaff-bg/stockroom?logo=github
-
+[go-version]:https://img.shields.io/github/go-mod/go-version/slaff-bg/stockroom?logo=github
 
