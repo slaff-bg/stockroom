@@ -5,6 +5,7 @@
 !*.go
 !go.sum
 !go.mod
+!sql-init.sql
 
 !README.md
 !LICENSE
