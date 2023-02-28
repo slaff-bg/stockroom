@@ -7,6 +7,7 @@
 !go.mod
 !sql-init.sql
 !ports/gqlgen.yml
+!.env_sample
 
 !README.md
 !LICENSE
