@@ -49,11 +49,10 @@ All advice and recommendations are welcome. :)
 - [ ] System environment health check.
 - [ ] Customer authentication.
 - [ ] Customer authorization.
-- [ ] Filtering/ordering/sorting.
 
-- [ ] Dockerize the application.
 - [ ] GraphQL
 - [ ] Defining OpenAPI specification.
+- [ ] Dockerize the application.
 - [ ] Add a collection of required files for Postman.
 - [ ] etc.
 

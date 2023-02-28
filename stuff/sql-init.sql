@@ -1,12 +1,11 @@
 -- = = = = = = =
 -- When Docker Container is used, there is a delay in installing the extensions.
--- While it is running, the seeds fail to execute.
--- That's why I impose this check. 
+-- Because of it, the seeds fail to fulfill. That's why I impose this check. 
 -- = = = = = = =
 DO $$
 DECLARE
     extItem text;
-    extItems text[] := ARRAY['uuid-ossp', 'pgcrypto'];
+    extItems text[] := ARRAY['uuid-ossp', 'pgcrypto']; -- Required extensions.
     extFound varchar(16);
     maxAttempts integer := 4; -- The maximum number of check attempts.
     attempts integer := 0;
