@@ -6,6 +6,7 @@
 !go.sum
 !go.mod
 !sql-init.sql
+!ports/gqlgen.yml
 
 !README.md
 !LICENSE
