@@ -34,9 +34,8 @@ var (
 )
 
 func ConnectDB() {
-	err := godotenv.Load(".env")
-	if err != nil {
-		panic(err)
+	if err := godotenv.Load(".env"); err != nil {
+		log.Fatalf("Error loading .env file")
 	}
 
 	// Depending on the setting of POSTGRES_LOCAL_INSTANCE in the
