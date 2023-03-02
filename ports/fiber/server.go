@@ -21,7 +21,9 @@ func main() {
 	srv := fiber.New()
 
 	srv.Get("/", func(c *fiber.Ctx) error {
-		return c.SendString(fmt.Sprintf("Stockroom port(%v) ... welcome!", os.Getenv("FIBER_PORT")))
+		return c.JSON(&fiber.Map{
+			"main": os.Getenv("APP_NAME"),
+		})
 	})
 
 	port := os.Getenv("FIBER_PORT")

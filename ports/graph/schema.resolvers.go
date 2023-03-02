@@ -23,7 +23,12 @@ func (r *mutationResolver) UpdateUser(ctx context.Context, userID string, input 
 
 // Users is the resolver for the users field.
 func (r *queryResolver) Users(ctx context.Context) ([]*model.User, error) {
-	panic(fmt.Errorf("not implemented: Users - users"))
+	var users []*model.User
+	dbg := r.GDB.Find(&users)
+	if err := dbg.Error; err != nil {
+		return nil, err
+	}
+	return users, nil
 }
 
 // Mutation returns MutationResolver implementation.

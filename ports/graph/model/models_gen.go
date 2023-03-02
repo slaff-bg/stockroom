@@ -13,6 +13,7 @@ type User struct {
 
 type UserInput struct {
 	Email     string `json:"email"`
+	Passwd    string `json:"passwd"`
 	FirstName string `json:"first_name"`
 	LastName  string `json:"last_name"`
 }
