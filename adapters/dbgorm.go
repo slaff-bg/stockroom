@@ -13,6 +13,7 @@ import (
 
 type dbGorm struct {
 	INST *gorm.DB
+	PLI  bool // POSTGRES_LOCAL_INSTANCE
 }
 
 var db dbGorm
@@ -33,7 +34,7 @@ var (
 	dbmei string // db mod env info
 )
 
-func ConnectDB() {
+func init() {
 	if err := godotenv.Load(".env"); err != nil {
 		log.Fatalf("Error loading .env file")
 	}
@@ -41,11 +42,18 @@ func ConnectDB() {
 	// Depending on the setting of POSTGRES_LOCAL_INSTANCE in the
 	// configuration file, it loads the appropriate credentials.
 	if os.Getenv("POSTGRES_LOCAL_INSTANCE") == "true" {
-		setEnvCredentials(true)
-	} else {
-		setEnvCredentials(false)
+		db.PLI = true
 	}
 
+	setConnData(db.PLI)
+	setConnection()
+}
+
+func GetGormConn() *gorm.DB {
+	return db.INST
+}
+
+func setConnection() {
 	dsn := fmt.Sprintf(
 		"host=%s user=%s password=%s dbname=%s port=%s sslmode=%s TimeZone=%s",
 		cr.DB_HOST,
@@ -67,17 +75,12 @@ func ConnectDB() {
 	log.Printf("\nDB connected successfully and ran in a %s environment ...\n", dbmei)
 	// dbo.Logger = logger.Default.LogMode(logger.Info)
 
-	// log.Println("running migrations")
-	// dbo.AutoMigrate(&models.Fact{})
-
-	db = dbGorm{
-		INST: dbo,
-	}
+	db.INST = dbo
 }
 
-// setEnvCredentials sets the credentials depending on a configuration where the
+// setConnData sets the credentials depending on a configuration where the
 // argument (l) means Local.
-func setEnvCredentials(l bool) {
+func setConnData(l bool) {
 	if l {
 		cr.DB_HOST = os.Getenv("LOCAL_DB_HOST")
 		cr.DB_DRIVER = os.Getenv("LOCAL_DB_DRIVER")

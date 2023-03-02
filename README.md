@@ -50,7 +50,8 @@ All advice and recommendations are welcome. :)
 - [ ] Customer authentication.
 - [ ] Customer authorization.
 
-- [ ] GraphQL
+- [x] GraphQL
+- [x] Fiber
 - [ ] Defining OpenAPI specification.
 - [ ] Dockerize the application.
 - [ ] Add a collection of required files for Postman.
