@@ -1,6 +1,8 @@
 package graph
 
-import "gorm.io/gorm"
+import (
+	"gorm.io/gorm"
+)
 
 // This file will not be regenerated automatically.
 //
@@ -9,3 +11,6 @@ import "gorm.io/gorm"
 type Resolver struct {
 	GDB *gorm.DB
 }
+
+// func (u *model.User) FetchAllUsers() {
+// }

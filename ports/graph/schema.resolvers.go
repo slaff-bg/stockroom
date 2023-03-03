@@ -11,6 +11,16 @@ import (
 	"github.com/slaff-bg/stockroom/ports/graph/model"
 )
 
+// ShowUser is the resolver for the showUser field.
+// func (r *mutationResolver) ShowUser(ctx context.Context, userID int) (*model.User, error) {
+// 	var usr *model.User
+// 	dbg := r.GDB.Where("id = ?", userID).First(&usr)
+// 	if err := dbg.Error; err != nil {
+// 		return nil, err
+// 	}
+// 	return usr, nil
+// }
+
 // CreateUser is the resolver for the createUser field.
 func (r *mutationResolver) CreateUser(ctx context.Context, input model.UserInput) (*model.User, error) {
 	panic(fmt.Errorf("not implemented: CreateUser - createUser"))
@@ -24,7 +34,7 @@ func (r *mutationResolver) UpdateUser(ctx context.Context, userID string, input 
 // Users is the resolver for the users field.
 func (r *queryResolver) Users(ctx context.Context) ([]*model.User, error) {
 	var users []*model.User
-	dbg := r.GDB.Find(&users)
+	dbg := r.GDB.WithContext(ctx).Find(&users)
 	if err := dbg.Error; err != nil {
 		return nil, err
 	}
