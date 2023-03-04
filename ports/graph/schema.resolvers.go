@@ -11,16 +11,6 @@ import (
 	"github.com/slaff-bg/stockroom/ports/graph/model"
 )
 
-// ShowUser is the resolver for the showUser field.
-// func (r *mutationResolver) ShowUser(ctx context.Context, userID int) (*model.User, error) {
-// 	var usr *model.User
-// 	dbg := r.GDB.Where("id = ?", userID).First(&usr)
-// 	if err := dbg.Error; err != nil {
-// 		return nil, err
-// 	}
-// 	return usr, nil
-// }
-
 // CreateUser is the resolver for the createUser field.
 func (r *mutationResolver) CreateUser(ctx context.Context, input model.UserInput) (*model.User, error) {
 	panic(fmt.Errorf("not implemented: CreateUser - createUser"))
@@ -41,6 +31,16 @@ func (r *queryResolver) Users(ctx context.Context) ([]*model.User, error) {
 	return users, nil
 }
 
+// UserByID is the resolver for the UserById field.
+func (r *queryResolver) UserByID(ctx context.Context, id *string) (*model.User, error) {
+	var u model.User
+	dbg := r.GDB.WithContext(ctx).Where("id = ?", id).First(&u)
+	if err := dbg.Error; err != nil {
+		return nil, err
+	}
+	return &u, nil
+}
+
 // Mutation returns MutationResolver implementation.
 func (r *Resolver) Mutation() MutationResolver { return &mutationResolver{r} }
 
@@ -49,3 +49,21 @@ func (r *Resolver) Query() QueryResolver { return &queryResolver{r} }
 
 type mutationResolver struct{ *Resolver }
 type queryResolver struct{ *Resolver }
+
+// !!! WARNING !!!
+// The code below was going to be deleted when updating resolvers. It has been copied here so you have
+// one last chance to move it out of harms way if you want. There are two reasons this happens:
+//   - When renaming or deleting a resolver the old code will be put in here. You can safely delete
+//     it when you're done.
+//   - You have helper methods in this file. Move them out to keep these resolver files clean.
+func (r *queryResolver) GetOneUser(ctx context.Context, id *string) (*model.User, error) {
+	panic(fmt.Errorf("not implemented: GetOneUser - GetOneUser"))
+}
+func (r *queryResolver) UserById(ctx context.Context, id *string) (*model.User, error) {
+	var u model.User
+	dbg := r.GDB.WithContext(ctx).Where("id = ?", id).First(&u)
+	if err := dbg.Error; err != nil {
+		return nil, err
+	}
+	return &u, nil
+}
