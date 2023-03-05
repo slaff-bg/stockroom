@@ -13,7 +13,19 @@ import (
 
 // CreateUser is the resolver for the createUser field.
 func (r *mutationResolver) CreateUser(ctx context.Context, input model.UserInput) (*model.User, error) {
-	panic(fmt.Errorf("not implemented: CreateUser - createUser"))
+	u := &model.User{
+		Customer:  input.Customer,
+		Email:     input.Email,
+		Passwd:    input.Passwd,
+		FirstName: input.FirstName,
+		LastName:  input.LastName,
+	}
+	// log.Println("ZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZ")
+	if err := r.GDB.Create(&u).Error; err != nil {
+		// log.Println("XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXx")
+		return nil, err
+	}
+	return u, nil
 }
 
 // UpdateUser is the resolver for the updateUser field.
@@ -24,8 +36,7 @@ func (r *mutationResolver) UpdateUser(ctx context.Context, userID string, input 
 // Users is the resolver for the users field.
 func (r *queryResolver) Users(ctx context.Context) ([]*model.User, error) {
 	var users []*model.User
-	dbg := r.GDB.WithContext(ctx).Find(&users)
-	if err := dbg.Error; err != nil {
+	if err := r.GDB.WithContext(ctx).Find(&users).Error; err != nil {
 		return nil, err
 	}
 	return users, nil
@@ -34,8 +45,7 @@ func (r *queryResolver) Users(ctx context.Context) ([]*model.User, error) {
 // UserByID is the resolver for the UserById field.
 func (r *queryResolver) UserByID(ctx context.Context, id *string) (*model.User, error) {
 	var u model.User
-	dbg := r.GDB.WithContext(ctx).Where("id = ?", id).First(&u)
-	if err := dbg.Error; err != nil {
+	if err := r.GDB.WithContext(ctx).Where("id = ?", id).Take(&u).Error; err != nil {
 		return nil, err
 	}
 	return &u, nil
@@ -49,21 +59,3 @@ func (r *Resolver) Query() QueryResolver { return &queryResolver{r} }
 
 type mutationResolver struct{ *Resolver }
 type queryResolver struct{ *Resolver }
-
-// !!! WARNING !!!
-// The code below was going to be deleted when updating resolvers. It has been copied here so you have
-// one last chance to move it out of harms way if you want. There are two reasons this happens:
-//   - When renaming or deleting a resolver the old code will be put in here. You can safely delete
-//     it when you're done.
-//   - You have helper methods in this file. Move them out to keep these resolver files clean.
-func (r *queryResolver) GetOneUser(ctx context.Context, id *string) (*model.User, error) {
-	panic(fmt.Errorf("not implemented: GetOneUser - GetOneUser"))
-}
-func (r *queryResolver) UserById(ctx context.Context, id *string) (*model.User, error) {
-	var u model.User
-	dbg := r.GDB.WithContext(ctx).Where("id = ?", id).First(&u)
-	if err := dbg.Error; err != nil {
-		return nil, err
-	}
-	return &u, nil
-}

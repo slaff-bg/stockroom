@@ -61,7 +61,13 @@ All advice and recommendations are welcome. :)
 
 ## Usage ##
 
-n/as
+n/a
+
+
+## TODO ##
+
+- [ ] Add validations.
+- [ ] Add authentication.
 
 
 

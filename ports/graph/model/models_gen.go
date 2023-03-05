@@ -8,7 +8,9 @@ import (
 
 type User struct {
 	ID        string    `json:"id"`
+	Customer  string    `json:"customer"`
 	Email     string    `json:"email"`
+	Passwd    string    `json:"passwd"`
 	FirstName string    `json:"first_name"`
 	LastName  string    `json:"last_name"`
 	CreatedAt time.Time `json:"created_at"`
@@ -17,6 +19,7 @@ type User struct {
 
 type UserInput struct {
 	Email     string `json:"email"`
+	Customer  string `json:"customer"`
 	Passwd    string `json:"passwd"`
 	FirstName string `json:"first_name"`
 	LastName  string `json:"last_name"`
