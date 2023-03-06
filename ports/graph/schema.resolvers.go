@@ -6,31 +6,25 @@ package graph
 
 import (
 	"context"
-	"fmt"
 
 	"github.com/slaff-bg/stockroom/ports/graph/model"
 )
 
 // CreateUser is the resolver for the createUser field.
 func (r *mutationResolver) CreateUser(ctx context.Context, input model.UserInput) (*model.User, error) {
-	u := &model.User{
-		Customer:  input.Customer,
-		Email:     input.Email,
-		Passwd:    input.Passwd,
-		FirstName: input.FirstName,
-		LastName:  input.LastName,
+	u := &model.User{}
+	var uInput = map[string]interface{}{
+		"customer_id": input.CustomerID,
+		"email":       input.Email,
+		"passwd":      input.Passwd,
+		"first_name":  input.FirstName,
+		"last_name":   input.LastName,
 	}
-	// log.Println("ZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZ")
-	if err := r.GDB.Create(&u).Error; err != nil {
-		// log.Println("XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXx")
+
+	if err := r.GDB.Model(&u).Create(uInput).Error; err != nil {
 		return nil, err
 	}
 	return u, nil
-}
-
-// UpdateUser is the resolver for the updateUser field.
-func (r *mutationResolver) UpdateUser(ctx context.Context, userID string, input model.UserInput) (*model.User, error) {
-	panic(fmt.Errorf("not implemented: UpdateUser - updateUser"))
 }
 
 // Users is the resolver for the users field.
@@ -49,6 +43,24 @@ func (r *queryResolver) UserByID(ctx context.Context, id *string) (*model.User, 
 		return nil, err
 	}
 	return &u, nil
+}
+
+// Customers is the resolver for the customers field.
+func (r *queryResolver) Customers(ctx context.Context) ([]*model.Customer, error) {
+	var customers []*model.Customer
+	if err := r.GDB.WithContext(ctx).Find(&customers).Error; err != nil {
+		return nil, err
+	}
+	return customers, nil
+}
+
+// CustmerByID is the resolver for the CustmerById field.
+func (r *queryResolver) CustmerByID(ctx context.Context, id *string) (*model.Customer, error) {
+	var cmr model.Customer
+	if err := r.GDB.WithContext(ctx).Where("id = ?", id).Take(&cmr).Error; err != nil {
+		return nil, err
+	}
+	return &cmr, nil
 }
 
 // Mutation returns MutationResolver implementation.
