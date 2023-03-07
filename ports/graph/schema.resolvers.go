@@ -7,7 +7,7 @@ package graph
 import (
 	"context"
 
-	"github.com/slaff-bg/stockroom/helpers"
+	"github.com/slaff-bg/stockroom/facilities"
 	"github.com/slaff-bg/stockroom/ports/graph/model"
 	"gorm.io/gorm/clause"
 )
@@ -17,12 +17,32 @@ func (r *mutationResolver) CreateUser(ctx context.Context, input model.UserInput
 	u := &model.User{
 		CustomerID: input.CustomerID,
 		Email:      input.Email,
-		Passwd:     helpers.PasswdGen(input.Passwd),
+		Passwd:     facilities.PasswdGen(input.Passwd),
 		FirstName:  input.FirstName,
 		LastName:   input.LastName,
 	}
 
 	if err := r.GDB.Clauses(clause.Returning{}).Omit("id", "created_at", "updated_at").Create(&u).Error; err != nil {
+		return nil, err
+	}
+	return u, nil
+}
+
+// UpdateUser is the resolver for the updateUser field.
+func (r *mutationResolver) UpdateUser(ctx context.Context, input model.UserUpdate) (*model.User, error) {
+	u := &model.User{
+		ID:         input.ID,
+		CustomerID: input.CustomerID,
+		Email:      input.Email,
+		FirstName:  input.FirstName,
+		LastName:   input.LastName,
+	}
+
+	// if err := r.GDB.Clauses(clause.Returning{}).Omit("id", "customer_id", "passwd", "created_at", "updated_at").
+	if err := r.GDB.Clauses(clause.Returning{}).Select("email", "first_name", "last_name").
+		Where("id = ?", input.ID).
+		Where("customer_id = ?", input.CustomerID).
+		Save(&u).Error; err != nil {
 		return nil, err
 	}
 	return u, nil
