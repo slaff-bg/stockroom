@@ -66,8 +66,11 @@ n/a
 
 ## TODO ##
 
-- [ ] Add validations.
+- [ ] Add fields validations.
 - [ ] Add authentication.
+- [ ] Create default user (admin) when create new Customer. Should be triggered.
+- [ ] Add to UserById CustomerID as required. Change the DB query.
+
 
 
 
