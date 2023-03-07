@@ -7,21 +7,22 @@ package graph
 import (
 	"context"
 
+	"github.com/slaff-bg/stockroom/helpers"
 	"github.com/slaff-bg/stockroom/ports/graph/model"
+	"gorm.io/gorm/clause"
 )
 
 // CreateUser is the resolver for the createUser field.
 func (r *mutationResolver) CreateUser(ctx context.Context, input model.UserInput) (*model.User, error) {
-	u := &model.User{}
-	var uInput = map[string]interface{}{
-		"customer_id": input.CustomerID,
-		"email":       input.Email,
-		"passwd":      input.Passwd,
-		"first_name":  input.FirstName,
-		"last_name":   input.LastName,
+	u := &model.User{
+		CustomerID: input.CustomerID,
+		Email:      input.Email,
+		Passwd:     helpers.PasswdGen(input.Passwd),
+		FirstName:  input.FirstName,
+		LastName:   input.LastName,
 	}
 
-	if err := r.GDB.Model(&u).Create(uInput).Error; err != nil {
+	if err := r.GDB.Clauses(clause.Returning{}).Omit("id", "created_at", "updated_at").Create(&u).Error; err != nil {
 		return nil, err
 	}
 	return u, nil
