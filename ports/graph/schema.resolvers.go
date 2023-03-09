@@ -38,7 +38,6 @@ func (r *mutationResolver) UpdateUser(ctx context.Context, input model.UserUpdat
 		LastName:   input.LastName,
 	}
 
-	// if err := r.GDB.Clauses(clause.Returning{}).Omit("id", "customer_id", "passwd", "created_at", "updated_at").
 	if err := r.GDB.Clauses(clause.Returning{}).Select("email", "first_name", "last_name").
 		Where("id = ?", input.ID).
 		Where("customer_id = ?", input.CustomerID).
@@ -46,6 +45,15 @@ func (r *mutationResolver) UpdateUser(ctx context.Context, input model.UserUpdat
 		return nil, err
 	}
 	return u, nil
+}
+
+// User is the resolver for the user field.
+func (r *queryResolver) User(ctx context.Context, id *string) (*model.User, error) {
+	var u model.User
+	if err := r.GDB.WithContext(ctx).Where("id = ?", id).Take(&u).Error; err != nil {
+		return nil, err
+	}
+	return &u, nil
 }
 
 // Users is the resolver for the users field.
@@ -57,13 +65,13 @@ func (r *queryResolver) Users(ctx context.Context) ([]*model.User, error) {
 	return users, nil
 }
 
-// UserByID is the resolver for the UserById field.
-func (r *queryResolver) UserByID(ctx context.Context, id *string) (*model.User, error) {
-	var u model.User
-	if err := r.GDB.WithContext(ctx).Where("id = ?", id).Take(&u).Error; err != nil {
+// Customer is the resolver for the customer field.
+func (r *queryResolver) Customer(ctx context.Context, id *string) (*model.Customer, error) {
+	var cmr model.Customer
+	if err := r.GDB.WithContext(ctx).Where("id = ?", id).Take(&cmr).Error; err != nil {
 		return nil, err
 	}
-	return &u, nil
+	return &cmr, nil
 }
 
 // Customers is the resolver for the customers field.
@@ -73,15 +81,6 @@ func (r *queryResolver) Customers(ctx context.Context) ([]*model.Customer, error
 		return nil, err
 	}
 	return customers, nil
-}
-
-// CustmerByID is the resolver for the CustmerById field.
-func (r *queryResolver) CustmerByID(ctx context.Context, id *string) (*model.Customer, error) {
-	var cmr model.Customer
-	if err := r.GDB.WithContext(ctx).Where("id = ?", id).Take(&cmr).Error; err != nil {
-		return nil, err
-	}
-	return &cmr, nil
 }
 
 // Mutation returns MutationResolver implementation.
