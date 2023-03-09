@@ -22,7 +22,8 @@ func (r *mutationResolver) CreateUser(ctx context.Context, input model.UserInput
 		LastName:   input.LastName,
 	}
 
-	if err := r.GDB.Clauses(clause.Returning{}).Omit("id", "created_at", "updated_at").Create(&u).Error; err != nil {
+	if err := r.GDB.Clauses(clause.Returning{}).
+		Omit("id", "created_at", "updated_at").Create(&u).Error; err != nil {
 		return nil, err
 	}
 	return u, nil
@@ -38,8 +39,7 @@ func (r *mutationResolver) UpdateUser(ctx context.Context, input model.UserUpdat
 		LastName:   input.LastName,
 	}
 
-	if err := r.GDB.Clauses(clause.Returning{}).Select("email", "first_name", "last_name").
-		Where("id = ?", input.ID).
+	if err := r.GDB.Clauses(clause.Returning{}).WithContext(ctx).Select("email", "first_name", "last_name").
 		Where("customer_id = ?", input.CustomerID).
 		Save(&u).Error; err != nil {
 		return nil, err
