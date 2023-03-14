@@ -22,7 +22,7 @@ func (r *mutationResolver) CreateUser(ctx context.Context, input model.UserInput
 		LastName:   input.LastName,
 	}
 
-	if err := r.GDB.Clauses(clause.Returning{}).
+	if err := r.DBConn.Clauses(clause.Returning{}).
 		Omit("id", "created_at", "updated_at").Create(&u).Error; err != nil {
 		return nil, err
 	}
@@ -39,7 +39,7 @@ func (r *mutationResolver) UpdateUser(ctx context.Context, input model.UserUpdat
 		LastName:   input.LastName,
 	}
 
-	if err := r.GDB.Clauses(clause.Returning{}).WithContext(ctx).Select("email", "first_name", "last_name").
+	if err := r.DBConn.Clauses(clause.Returning{}).WithContext(ctx).Select("email", "first_name", "last_name").
 		Where("customer_id = ?", input.CustomerID).
 		Save(&u).Error; err != nil {
 		return nil, err
@@ -50,7 +50,7 @@ func (r *mutationResolver) UpdateUser(ctx context.Context, input model.UserUpdat
 // User is the resolver for the user field.
 func (r *queryResolver) User(ctx context.Context, id *string) (*model.User, error) {
 	var u model.User
-	if err := r.GDB.WithContext(ctx).Where("id = ?", id).Take(&u).Error; err != nil {
+	if err := r.DBConn.WithContext(ctx).Where("id = ?", id).Take(&u).Error; err != nil {
 		return nil, err
 	}
 	return &u, nil
@@ -59,7 +59,7 @@ func (r *queryResolver) User(ctx context.Context, id *string) (*model.User, erro
 // Users is the resolver for the users field.
 func (r *queryResolver) Users(ctx context.Context) ([]*model.User, error) {
 	var users []*model.User
-	if err := r.GDB.WithContext(ctx).Find(&users).Error; err != nil {
+	if err := r.DBConn.WithContext(ctx).Find(&users).Error; err != nil {
 		return nil, err
 	}
 	return users, nil
@@ -68,16 +68,17 @@ func (r *queryResolver) Users(ctx context.Context) ([]*model.User, error) {
 // Customer is the resolver for the customer field.
 func (r *queryResolver) Customer(ctx context.Context, id *string) (*model.Customer, error) {
 	var cmr model.Customer
-	if err := r.GDB.WithContext(ctx).Where("id = ?", id).Take(&cmr).Error; err != nil {
+	if err := r.DBConn.WithContext(ctx).Where("id = ?", id).Take(&cmr).Error; err != nil {
 		return nil, err
 	}
 	return &cmr, nil
+	// "github.com/slaff-bg/stockroom/domain/customers"
 }
 
 // Customers is the resolver for the customers field.
 func (r *queryResolver) Customers(ctx context.Context) ([]*model.Customer, error) {
 	var customers []*model.Customer
-	if err := r.GDB.WithContext(ctx).Find(&customers).Error; err != nil {
+	if err := r.DBConn.WithContext(ctx).Find(&customers).Error; err != nil {
 		return nil, err
 	}
 	return customers, nil

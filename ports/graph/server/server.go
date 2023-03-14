@@ -12,27 +12,34 @@ import (
 	"github.com/slaff-bg/stockroom/ports/graph"
 )
 
-const defaultPort = "8080"
+const defaultHTTPPort = "8080"
 
-func init() {
-	// adapters.ConnectDB()
+type httpServer struct {
+	db       adapters.DBRepo
+	httpPort string
 }
 
-func main() {
+func init() {
 	if err := godotenv.Load(".env"); err != nil {
 		log.Fatalf("Error loading .env file")
 	}
+}
 
-	port := os.Getenv("GRAPHQL_PORT")
-	if port == "" {
-		port = defaultPort
+func main() {
+	// Set httpServer properties.
+	var httpSet httpServer
+	httpSet.httpPort = os.Getenv("GRAPHQL_PORT")
+	if httpSet.httpPort == "" {
+		httpSet.httpPort = defaultHTTPPort
 	}
+	httpSet.db = adapters.DBRepo{}
+	httpSet.db.Connect()
 
 	http.Handle("/", playground.Handler("GraphQL playground", "/query"))
 
-	srv := handler.NewDefaultServer(graph.NewExecutableSchema(graph.Config{Resolvers: &graph.Resolver{GDB: adapters.GetGormConn()}}))
+	srv := handler.NewDefaultServer(graph.NewExecutableSchema(graph.Config{Resolvers: &graph.Resolver{DBConn: httpSet.db.DB.INST}}))
 	http.Handle("/query", srv)
 
-	log.Printf("connect to http://localhost:%s/ for GraphQL playground", port)
-	log.Fatal(http.ListenAndServe(":"+port, nil))
+	log.Printf("connect to http://localhost:%s/ for GraphQL playground", httpSet.httpPort)
+	log.Fatal(http.ListenAndServe(":"+httpSet.httpPort, nil))
 }

@@ -61,3 +61,5 @@ models:
       - github.com/99designs/gqlgen/graphql.Int
       - github.com/99designs/gqlgen/graphql.Int64
       - github.com/99designs/gqlgen/graphql.Int32
+  # Customer:
+  #   model: github.com/slaff-bg/stockroom/domain/customers.Customer
