@@ -12,11 +12,13 @@ import (
 )
 
 type dbGorm struct {
-	INST *gorm.DB
-	PLI  bool // POSTGRES_LOCAL_INSTANCE
+	INST  *gorm.DB
+	pgsLI bool // POSTGRES_LOCAL_INSTANCE
 }
 
-var db dbGorm
+var (
+	db dbGorm
+)
 
 type credentials struct {
 	DB_HOST      string
@@ -42,10 +44,10 @@ func init() {
 	// Depending on the setting of POSTGRES_LOCAL_INSTANCE in the
 	// configuration file, it loads the appropriate credentials.
 	if os.Getenv("POSTGRES_LOCAL_INSTANCE") == "true" {
-		db.PLI = true
+		db.pgsLI = true
 	}
 
-	setConnData(db.PLI)
+	setConnData(db.pgsLI)
 	setConnection()
 }
 

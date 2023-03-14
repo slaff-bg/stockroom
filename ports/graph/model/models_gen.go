@@ -7,8 +7,10 @@ import (
 )
 
 type Customer struct {
-	ID        string `json:"id"`
-	BrandName string `json:"brand_name"`
+	ID        string    `json:"id"`
+	BrandName string    `json:"brand_name"`
+	CreatedAt time.Time `json:"created_at"`
+	UpdatedAt time.Time `json:"updated_at"`
 }
 
 type CustomerInput struct {
